@@ -7,7 +7,7 @@ class Search_Result(Base):
     __tablename__ = 'search_result'
 
     id = Column(Integer, primary_key=True)
-    search = Column(String)
+    search_id = Column(String)
     position = Column(Integer)
     title = Column(String)
     link = Column(String)
