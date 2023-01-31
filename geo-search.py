@@ -5,6 +5,8 @@ import json
 import time
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
 
 #Internal Imports
 from config import API_KEY, SERVER_URL, DATABASE, DB_USERNAME, DB_PASSWORD
@@ -19,9 +21,9 @@ from objects.twitter_result import Twitter_Result
 from objects.visual_story import Visual_Story
 from objects.rq import Related_Question
 
-queries = ["russia", "Ukraine War", "RT"]
-locations = ["Greater London" , "Scotland", "Northern Ireland", "Wales"]
-search_engines = ["google" , "baidu", "bing", "yahoo", "yandex"]
+queries = ["Scottish Independence"]#, "Ukraine War", "RT"]
+locations = ["Greater London" ]#, "Scotland", "Northern Ireland", "Wales"]
+search_engines = ["google"]# , "baidu", "bing", "yahoo", "yandex"]
 
 current_timestamp_str = str(int(time.time()))
 
@@ -71,54 +73,66 @@ def search_serpapi(queries, locations, search_engines):
 search_serpapi(queries, locations, search_engines)
 print(query_res.organic_results)
 # # Define the connection string
-# connection_string = 'mssql+pyodbc://'+DB_USERNAME+':'+DB_PASSWORD+'@'+SERVER_URL+'/'+DATABASE+'?driver=ODBC+Driver+17+for+SQL+Server'
+connection_string = 'postgresql+psycopg2://'+DB_USERNAME+':'+DB_PASSWORD+'@'+SERVER_URL+'/'+DATABASE
 
-# # Create the SQLAlchemy engine
-# engine = create_engine(connection_string)
+# Create the SQLAlchemy engine
+engine = create_engine(connection_string)
 
-# # Connect to the database
-# connection = engine.connect()
+# Connect to the database
+connection = engine.connect()
+Base = declarative_base()
+Base.metadata.create_all(engine)
 
-# Session = sessionmaker(bind=engine)
-# session = Session()
+Session = sessionmaker(bind=engine)
+session = Session()
 
-# try:
-#     for item in organic_results:
-#         result = Search_Result(**item)
-#         session.add(result)
+# Search_Result.__table__.drop(engine)
+# Search_Result.__table__.create(engine)
+# Related_Search.__table__.create(engine)
+# People_Also_Search_For.__table__.create(engine)
+# Ad.__table__.create(engine)
+# Q_and_A.__table__.create(engine)
+# Top_Story.__table__.create(engine)
+# Twitter_Result.__table__.create(engine)
+# Visual_Story.__table__.create(engine)
+# session.commit()
+try:
+    for item in query_res.organic_results:
+        result = Search_Result(**item)
+        session.add(result)
 
-#     for item in related_searches:
-#         result = Related_Search(**item)
-#         session.add(result)
+    for item in query_res.related_searches:
+        result = Related_Search(**item)
+        session.add(result)
 
-#     for item in people_also_search_for:
-#         result = People_Also_Search_For(**item)
-#         session.add(result)
+    for item in query_res.people_also_search_for:
+        result = People_Also_Search_For(**item)
+        session.add(result)
 
-#     for item in ads:
-#         result = Ad(**item)
-#         session.add(result)
+    for item in query_res.ads:
+        result = Ad(**item)
+        session.add(result)
 
-#     for item in questions_and_answers:
-#         result = Q_and_A(**item)
-#         session.add(result)
+    for item in query_res.questions_and_answers:
+        result = Q_and_A(**item)
+        session.add(result)
 
-#     for item in related_questions:
-#         result = Related_Question(**item)
-#         session.add(result)
+    for item in query_res.related_questions:
+        result = Related_Question(**item)
+        session.add(result)
 
-#     for item in top_stories:
-#         result = Top_Story(**item)
-#         session.add(result)
+    for item in query_res.top_stories:
+        result = Top_Story(**item)
+        session.add(result)
 
-#     for item in twitter_results:
-#         result = Twitter_Result(**item)
-#         session.add(result)
+    for item in query_res.twitter_results:
+        result = Twitter_Result(**item)
+        session.add(result)
 
-#     for item in visual_stories:
-#         result = Visual_Story(**item)
-#         session.add(result)
+    for item in query_res.visual_stories:
+        result = Visual_Story(**item)
+        session.add(result)
 
-#     session.commit()
-# finally:
-#     session.close()
+    session.commit()
+finally:
+    session.close()

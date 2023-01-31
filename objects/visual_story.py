@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Integer, String, JSON, Text
 from sqlalchemy.ext.declarative import declarative_base
 
-
 Base = declarative_base()
 
 class Visual_Story(Base):

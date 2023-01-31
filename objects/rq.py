@@ -8,6 +8,7 @@ class Related_Question(Base):
 
     id = Column(Integer, primary_key=True)
     search_id = Column(String)
+    question = Column(String)
     snippet = Column(String)
     title = Column(String)
     date = Column(String)
