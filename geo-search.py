@@ -86,16 +86,6 @@ Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 session = Session()
 
-# Search_Result.__table__.drop(engine)
-# Search_Result.__table__.create(engine)
-# Related_Search.__table__.create(engine)
-# People_Also_Search_For.__table__.create(engine)
-# Ad.__table__.create(engine)
-# Q_and_A.__table__.create(engine)
-# Top_Story.__table__.create(engine)
-# Twitter_Result.__table__.create(engine)
-# Visual_Story.__table__.create(engine)
-# session.commit()
 try:
     for item in query_res.organic_results:
         result = Search_Result(**item)
