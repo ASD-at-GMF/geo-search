@@ -10,3 +10,4 @@ class Related_Search(Base):
     search_id = Column(String)
     query = Column(String)
     link = Column(String)
+    serpapi_link = Column(String)

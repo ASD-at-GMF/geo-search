@@ -23,7 +23,7 @@ from objects.rq import Related_Question
 
 queries = ["Scottish Independence"]#, "Ukraine War", "RT"]
 locations = ["Greater London" ]#, "Scotland", "Northern Ireland", "Wales"]
-search_engines = ["google"]# , "baidu", "bing", "yahoo", "yandex"]
+search_engines = [ "yandex", "google", "bing", "baidu","yahoo"] #"google", "bing", "baidu","yahoo",
 
 current_timestamp_str = str(int(time.time()))
 
@@ -36,8 +36,14 @@ def search_serpapi(queries, locations, search_engines):
     base_url = "https://serpapi.com/search"  # base url of the API
     # iterating through all the possible combinations of queries, locations, and search engines
     for query, location, search_engine in product(queries, locations, search_engines):
-        params = {"q": query, "location": location, "api_key": api_key,
-                  "engine": search_engine, "num": 40}  # forming the query parameters
+        params = { "text": query, "location": location, "api_key": api_key,
+                  "engine": search_engine, "vc": "uk", "lr":6708, "num": 40}  # forming the query parameters
+        if search_engine == "yandex":
+            params["text"] = query
+        elif search_engine == "yahoo":
+            params["p"] = query
+        else:
+            params["q"] = query
         # sending the GET request to the API
         response = requests.get(base_url, params=params)
         data = response.json()  # getting the json response
@@ -45,9 +51,13 @@ def search_serpapi(queries, locations, search_engines):
         if 'organic_results' in data:
             data['organic_results'] = list(map(lambda item: {**item, 'search_id': query+'||'+location+'||'+search_engine +'||'+current_timestamp_str}, data['organic_results']))
             query_res.organic_results +=  data['organic_results']
-        if 'related_searches' in data:
-            data['related_searches'] = list(map(lambda item: {**item, 'search_id': query+'||'+location+'||'+search_engine +'||'+current_timestamp_str}, data['related_searches']))
-            query_res.related_searches  +=  data['related_searches']
+        if 'related_searc hes' in data:
+            if 'bottom' in data['related_searches']:
+                data['related_searches']['bottom'] = list(map(lambda item: {**item, 'search_id': query+'||'+location+'||'+search_engine +'||'+current_timestamp_str}, data['related_searches']))
+                query_res.related_searches  +=  data['related_searches']['bottom']
+            else:
+                data['related_searches'] = list(map(lambda item: {**item, 'search_id': query+'||'+location+'||'+search_engine +'||'+current_timestamp_str}, data['related_searches']))
+                query_res.related_searches  +=  data['related_searches']
         if 'people_also_search_for' in data:
             data['people_also_search_for'] = list(map(lambda item: {**item, 'search_id': query+'||'+location+'||'+search_engine +'||'+current_timestamp_str}, data['related_searches']))
             query_res.people_also_search_for  +=  data['people_also_search_for']
@@ -86,6 +96,17 @@ Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 session = Session()
 
+# Search_Result.__table__.drop(engine)
+# Search_Result.__table__.create(engine)
+# Related_Search.__table__.drop(engine)
+# Related_Search.__table__.create(engine)
+# People_Also_Search_For.__table__.create(engine)
+# Ad.__table__.create(engine)
+# Q_and_A.__table__.create(engine)
+# Top_Story.__table__.create(engine)
+# Twitter_Result.__table__.create(engine)
+# Visual_Story.__table__.create(engine)
+# session.commit()
 try:
     for item in query_res.organic_results:
         result = Search_Result(**item)

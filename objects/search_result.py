@@ -25,3 +25,4 @@ class Search_Result(Base):
     related_results = Column(JSON)
     rich_snippet = Column(JSON)
     displayed_results = Column(String)
+    displayed_brand = Column(String)
