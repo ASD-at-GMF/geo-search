@@ -3,12 +3,12 @@ from itertools import product  # importing the product method from itertools lib
 import requests
 import json
 import time
+import csv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-
-#Internal Imports
+# Internal Imports
 from config import API_KEY, SERVER_URL, DATABASE, DB_USERNAME, DB_PASSWORD
 from objects.search_query_results import Search_Query_Results
 from objects.search_result import Search_Result
@@ -21,93 +21,104 @@ from objects.twitter_result import Twitter_Result
 from objects.visual_story import Visual_Story
 from objects.rq import Related_Question
 
-queries = ["Scottish Independence"]#, "Ukraine War", "RT"]
-locations = ["Greater London" ]#, "Scotland", "Northern Ireland", "Wales"]
-search_engines = [ "yandex", "google", "bing", "baidu","yahoo"] #"google", "bing", "baidu","yahoo",
-
 current_timestamp_str = str(int(time.time()))
 
 # ignored = ['search_information', 'knowledge_graph', ]
-query_res = Search_Query_Results()
+
+def connect_to_db():
+    # Table drop/create--leave as is unless change is needed
+    # Search_Result.__table__.drop(engine)
+    # Search_Result.__table__.create(engine)
+    # Related_Search.__table__.drop(engine)
+    # Related_Search.__table__.create(engine)
+    # People_Also_Search_For.__table__.create(engine)
+    # Ad.__table__.create(engine)
+    # Q_and_A.__table__.create(engine)
+    # Top_Story.__table__.create(engine)
+    # Twitter_Result.__table__.create(engine)
+    # Visual_Story.__table__.create(engine)
+    # session.commit()
+
+    # Define the connection string
+    connection_string = 'postgresql+psycopg2://' + \
+    DB_USERNAME+':'+DB_PASSWORD+'@'+SERVER_URL+'/'+DATABASE
+
+    # Create the SQLAlchemy engine
+    engine = create_engine(connection_string)
+    
+    # Connect to the database
+    connection = engine.connect()   
+    Base = declarative_base()
+    Base.metadata.create_all(engine)
+
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    return session
+
+def form_parameters(query, location, search_engine):
+    params = {"text": query, "location": location, "api_key": API_KEY,
+              "engine": search_engine, "vc": "uk", "lr": 6708, "num": 40}  # forming the query parameters
+    if search_engine == "yandex":
+        params["text"] = query
+    elif search_engine == "yahoo":
+        params["p"] = query
+    else:
+        params["q"] = query
+    return params
 
 
-def search_serpapi(queries, locations, search_engines):
-    api_key = API_KEY
+def search_serpapi(query, location, search_engine):
+    query_res = Search_Query_Results()
     base_url = "https://serpapi.com/search"  # base url of the API
-    # iterating through all the possible combinations of queries, locations, and search engines
-    for query, location, search_engine in product(queries, locations, search_engines):
-        params = { "text": query, "location": location, "api_key": api_key,
-                  "engine": search_engine, "vc": "uk", "lr":6708, "num": 40}  # forming the query parameters
-        if search_engine == "yandex":
-            params["text"] = query
-        elif search_engine == "yahoo":
-            params["p"] = query
+    params = form_parameters(query, location, search_engine)
+    # sending the GET request to the API
+    response = requests.get(base_url, params=params)
+    data = response.json()  # getting the json response
+    if 'organic_results' in data:
+        data['organic_results'] = list(map(lambda item: {
+            **item, 'search_id': query+'||'+location+'||'+search_engine + '||'+current_timestamp_str}, data['organic_results']))
+        query_res.organic_results += data['organic_results']
+    if 'related_searches' in data:
+        if 'bottom' in data['related_searches']:
+            data['related_searches']['bottom'] = list(map(lambda item: {
+                **item, 'search_id': query+'||'+location+'||'+search_engine + '||'+current_timestamp_str}, data['related_searches']['bottom']))
+            query_res.related_searches += data['related_searches']['bottom']
         else:
-            params["q"] = query
-        # sending the GET request to the API
-        response = requests.get(base_url, params=params)
-        data = response.json()  # getting the json response
-        print(json.dumps(data, indent=2))  # printing the response
-        if 'organic_results' in data:
-            data['organic_results'] = list(map(lambda item: {**item, 'search_id': query+'||'+location+'||'+search_engine +'||'+current_timestamp_str}, data['organic_results']))
-            query_res.organic_results +=  data['organic_results']
-        if 'related_searc hes' in data:
-            if 'bottom' in data['related_searches']:
-                data['related_searches']['bottom'] = list(map(lambda item: {**item, 'search_id': query+'||'+location+'||'+search_engine +'||'+current_timestamp_str}, data['related_searches']))
-                query_res.related_searches  +=  data['related_searches']['bottom']
-            else:
-                data['related_searches'] = list(map(lambda item: {**item, 'search_id': query+'||'+location+'||'+search_engine +'||'+current_timestamp_str}, data['related_searches']))
-                query_res.related_searches  +=  data['related_searches']
-        if 'people_also_search_for' in data:
-            data['people_also_search_for'] = list(map(lambda item: {**item, 'search_id': query+'||'+location+'||'+search_engine +'||'+current_timestamp_str}, data['related_searches']))
-            query_res.people_also_search_for  +=  data['people_also_search_for']
-        if 'ads' in data:
-            data['ads'] = list(map(lambda item: {**item, 'search_id': query+'||'+location+'||'+search_engine +'||'+current_timestamp_str}, data['ads']))
-            query_res.ads +=   data['ads']
-        if 'questions_and_answers' in data:
-            data['questions_and_answers'] = list(map(lambda item: {**item, 'search_id': query+'||'+location+'||'+search_engine +'||'+current_timestamp_str}, data['questions_and_answers']))
-            query_res.questions_and_answers  +=  data['questions_and_answers']
-        if 'related_questions' in data:
-            data['related_questions'] = list(map(lambda item: {**item, 'search_id': query+'||'+location+'||'+search_engine +'||'+current_timestamp_str}, data['related_questions']))
-            query_res.related_questions  +=  data['related_questions']
-        if 'twitter_results' in data:
-            data['twitter_results'] = list(map(lambda item: {**item, 'search_id': query+'||'+location+'||'+search_engine +'||'+current_timestamp_str}, data['twitter_results']['tweets']))
-            query_res.twitter_results  +=  data['twitter_results']
-        if 'top_stories' in data:
-            data['top_stories'] = list(map(lambda item: {**item, 'search_id': query+'||'+location+'||'+search_engine +'||'+current_timestamp_str}, data['top_stories']))
-            query_res.top_stories  +=  data['top_stories']
-        if 'visual_stories' in data:
-            data['visual_stories'] = list(map(lambda item: {**item, 'search_id': query+'||'+location+'||'+search_engine +'||'+current_timestamp_str}, data['visual_stories']))
-            query_res.visual_stories  +=  data['visual_stories'] 
+            data['related_searches'] = list(map(lambda item: {
+                                            **item, 'search_id': query+'||'+location+'||'+search_engine + '||'+current_timestamp_str}, data['related_searches']))
+            query_res.related_searches += data['related_searches']
+    if 'people_also_search_for' in data:
+        data['people_also_search_for'] = list(map(lambda item: {
+            **item, 'search_id': query+'||'+location+'||'+search_engine + '||'+current_timestamp_str}, data['related_searches']))
+        query_res.people_also_search_for += data['people_also_search_for']
+    if 'ads' in data:
+        data['ads'] = list(map(lambda item: {
+            **item, 'search_id': query+'||'+location+'||'+search_engine + '||'+current_timestamp_str}, data['ads']))
+        query_res.ads += data['ads']
+    if 'questions_and_answers' in data:
+        data['questions_and_answers'] = list(map(lambda item: {
+            **item, 'search_id': query+'||'+location+'||'+search_engine + '||'+current_timestamp_str}, data['questions_and_answers']))
+        query_res.questions_and_answers += data['questions_and_answers']
+    if 'related_questions' in data:
+        data['related_questions'] = list(map(lambda item: {
+            **item, 'search_id': query+'||'+location+'||'+search_engine + '||'+current_timestamp_str}, data['related_questions']))
+        query_res.related_questions += data['related_questions']
+    if 'twitter_results' in data:
+        data['twitter_results'] = list(map(lambda item: {
+            **item, 'search_id': query+'||'+location+'||'+search_engine + '||'+current_timestamp_str}, data['twitter_results']['tweets']))
+        query_res.twitter_results += data['twitter_results']
+    if 'top_stories' in data:
+        data['top_stories'] = list(map(lambda item: {
+            **item, 'search_id': query+'||'+location+'||'+search_engine + '||'+current_timestamp_str}, data['top_stories']))
+        query_res.top_stories += data['top_stories']
+    if 'visual_stories' in data:
+        data['visual_stories'] = list(map(lambda item: {
+            **item, 'search_id': query+'||'+location+'||'+search_engine + '||'+current_timestamp_str}, data['visual_stories']))
+        query_res.visual_stories += data['visual_stories']
 
-search_serpapi(queries, locations, search_engines)
-print(query_res.organic_results)
-# # Define the connection string
-connection_string = 'postgresql+psycopg2://'+DB_USERNAME+':'+DB_PASSWORD+'@'+SERVER_URL+'/'+DATABASE
+    return query_res
 
-# Create the SQLAlchemy engine
-engine = create_engine(connection_string)
-
-# Connect to the database
-connection = engine.connect()
-Base = declarative_base()
-Base.metadata.create_all(engine)
-
-Session = sessionmaker(bind=engine)
-session = Session()
-
-# Search_Result.__table__.drop(engine)
-# Search_Result.__table__.create(engine)
-# Related_Search.__table__.drop(engine)
-# Related_Search.__table__.create(engine)
-# People_Also_Search_For.__table__.create(engine)
-# Ad.__table__.create(engine)
-# Q_and_A.__table__.create(engine)
-# Top_Story.__table__.create(engine)
-# Twitter_Result.__table__.create(engine)
-# Visual_Story.__table__.create(engine)
-# session.commit()
-try:
+def save_to_db(query_res):
     for item in query_res.organic_results:
         result = Search_Result(**item)
         session.add(result)
@@ -145,5 +156,19 @@ try:
         session.add(result)
 
     session.commit()
-finally:
-    session.close()
+
+session = connect_to_db()
+
+with open("C:\\Users\\PeterBenzoni\\repo\\geo-search\\searches.csv", "r", encoding='utf-8') as f:
+    reader = csv.DictReader(f)
+    try:
+        for row in reader:
+            print(row)
+            try:
+                query_res = search_serpapi(row['query'], row['location'], row['engine'])
+                save_to_db(query_res)
+            except Exception as e:
+                print(e)
+                continue
+    finally:
+        session.close()
