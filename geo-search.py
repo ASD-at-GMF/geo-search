@@ -26,18 +26,6 @@ current_timestamp_str = str(int(time.time()))
 # ignored = ['search_information', 'knowledge_graph', ]
 
 def connect_to_db():
-    # Table drop/create--leave as is unless change is needed
-    # Search_Result.__table__.drop(engine)
-    # Search_Result.__table__.create(engine)
-    # Related_Search.__table__.drop(engine)
-    # Related_Search.__table__.create(engine)
-    # People_Also_Search_For.__table__.create(engine)
-    # Ad.__table__.create(engine)
-    # Q_and_A.__table__.create(engine)
-    # Top_Story.__table__.create(engine)
-    # Twitter_Result.__table__.create(engine)
-    # Visual_Story.__table__.create(engine)
-    # session.commit()
 
     # Define the connection string
     connection_string = 'postgresql+psycopg2://' + \
@@ -50,6 +38,27 @@ def connect_to_db():
     connection = engine.connect()   
     Base = declarative_base()
     Base.metadata.create_all(engine)
+
+        # Table drop/create--leave as is unless change is needed
+    # Search_Result.__table__.drop(engine)
+    # Search_Result.__table__.create(engine)
+    # Related_Search.__table__.drop(engine)
+    # Related_Search.__table__.create(engine)
+    # People_Also_Search_For.__table__.drop(engine)
+    # People_Also_Search_For.__table__.create(engine)
+    # Ad.__table__.drop(engine)
+    # Ad.__table__.create(engine)
+    # Related_Question.__table__.drop(engine)
+    # Related_Question.__table__.create(engine)
+    # Q_and_A.__table__.drop(engine)
+    # Q_and_A.__table__.create(engine)
+    # Top_Story.__table__.drop(engine)
+    # Top_Story.__table__.create(engine)
+    # Twitter_Result.__table__.drop(engine)
+    # Twitter_Result.__table__.create(engine)
+    # Visual_Story.__table__.drop(engine)
+    # Visual_Story.__table__.create(engine)
+
 
     Session = sessionmaker(bind=engine)
     session = Session()

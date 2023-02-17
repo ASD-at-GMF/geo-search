@@ -14,3 +14,4 @@ class Top_Story(Base):
     source = Column(String)
     date = Column(String)
     thumbnail = Column(String)
+    live = Column(String)

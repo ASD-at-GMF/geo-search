@@ -26,3 +26,6 @@ class Search_Result(Base):
     rich_snippet = Column(JSON)
     displayed_results = Column(String)
     displayed_brand = Column(String)
+    related_questions = Column(JSON)
+    images = Column(JSON)
+    rich_snippet_table = Column(JSON)

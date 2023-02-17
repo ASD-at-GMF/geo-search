@@ -16,3 +16,7 @@ class Related_Question(Base):
     displayed_link = Column(String)
     next_page_token = Column(String)
     serpapi_link = Column(String)
+    related_questions = Column(JSON)
+    thumbnail = Column(String)
+    list = Column(JSON)
+    info = Column(JSON)

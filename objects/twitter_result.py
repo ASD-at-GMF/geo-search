@@ -12,3 +12,5 @@ class Twitter_Result(Base):
     link = Column(String)
     snippet = Column(String)
     published_date = Column(String)
+    info = Column(String)
+    thumbnail = Column(String)

@@ -16,4 +16,6 @@ class Ad(Base):
     displayed_link = Column(String)
     tracking_link = Column(String)
     description = Column(Text)
+    extensions = Column(String)
     sitelinks = Column(JSON)
+    products = Column(JSON)
