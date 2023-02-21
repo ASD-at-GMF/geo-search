@@ -1,61 +1,109 @@
-query,location,engine
-British imperialism,Greater London,google
-Falkland,Greater London,google
-British war crimes Afghanistan,Greater London,google
-colonial crimes,Greater London,google
-WMD lie,Greater London,google
-British empire,Greater London,google
- Russian sanctions failure,Greater London,google
-cost of living crisis,Greater London,google
+﻿query,location,engine
+indyref,Greater London,google
+Scottish referendum,Greater London,google
+gender recognition reform bill,Greater London,google
+Northern Ireland Protocol,Greater London,google
+Irish Sea border,Greater London,google
+cost of living,Greater London,google
+inflation,Greater London,google
 anti-strike bill,Greater London,google
+Russian sanctions failure,Greater London,google
+NATO expansion Ukraine,Greater London,google
+recession,Greater London,google
+Hong Kong protests,Greater London,google
+asylum seekers,Greater London,google
+price of petrol,Greater London,google
 NHS strikes,Greater London,google
-economic collapse ,Greater London,google
-Ukraine nuclear weapons,Greater London,google
 Kiev,Greater London,google
-UK weapons sales,Greater London,google
-UK mercenaries in Ukraine,Greater London,google
-Ukraine peace deal,Greater London,google
-Nord Stream sabotage,Greater London,google
-Did NATO expansion cause the Ukraine war?,Greater London,google
-Bucha,Greater London,google
-Bucha false flag,Greater London,google
-Crimean referendum,Greater London,google
-Ukrainian war crimes in Donbass,Greater London,google
-Luhansk Peoples Republic,Greater London,google
-Donetsk Peoples Republic,Greater London,google
-biolabs in Ukraine,Greater London,google
 UK military spending cuts,Greater London,google
-anti-lockdown protests,Greater London,google
+lockdown,Greater London,google
 covid restrictions,Greater London,google
 excess deaths 2022,Greater London,google
+covid vaccines,Greater London,google
+Pfizer,Greater London,google
+Moderna,Greater London,google
 Covid-19 origins,Greater London,google
-UK spied lockdown critics,Greater London,google
-Rwanda deportation plan,Greater London,google
-systemic racism UK,Greater London,google
-channel migrant deportation,Greater London,google
-migrant crime,Greater London,google
-gender recognition reform bill,Greater London,google
-Scotland transgender,Greater London,google
-gender-affirming care,Greater London,google
-anti-Muslim discrimination,Greater London,google
-Islamophobic hate,Greater London,google
-Islamist terrorism,Greater London,google
-Scottish Independence,Greater London,google
-indyref,Greater London,google
-indyref2,Greater London,google
-Northern Ireland Protocol,Greater London,google
-Irish reunification  ,Greater London,google
-Truth about Xinjiang,Greater London,google
-HKSAR,Greater London,google
-Hong Kong protests,Greater London,google
-BNO visas,Greater London,google
-Huawei ban ,Greater London,google
-Tommy Robinson,Greater London,google
-Nigel Farrage,Greater London,google
-Boris Johnson,Greater London,google
-Julian Assange,Greater London,google
-Nicola Sturgeon,Greater London,google
-Liz Truss,Greater London,google
-Rishi Sunak,Greater London,google
-Keir Starmer,Greater London,google
-Jeremy Corbyn
+anti-lockdown protests,Greater London,google
+covid restrictions,Greater London,google
+UK spied lockdown,Greater London,google
+indyref,Greater London,bing
+Scottish referendum,Greater London,bing
+gender recognition reform bill,Greater London,bing
+Northern Ireland Protocol,Greater London,bing
+Irish Sea border,Greater London,bing
+cost of living,Greater London,bing
+inflation,Greater London,bing
+anti-strike bill,Greater London,bing
+Russian sanctions failure,Greater London,bing
+NATO expansion Ukraine,Greater London,bing
+recession,Greater London,bing
+Hong Kong protests,Greater London,bing
+asylum seekers,Greater London,bing
+price of petrol,Greater London,bing
+NHS strikes,Greater London,bing
+Kiev,Greater London,bing
+UK military spending cuts,Greater London,bing
+lockdown,Greater London,bing
+covid restrictions,Greater London,bing
+excess deaths 2022,Greater London,bing
+covid vaccines,Greater London,bing
+Pfizer,Greater London,bing
+Moderna,Greater London,bing
+Covid-19 origins,Greater London,bing
+anti-lockdown protests,Greater London,bing
+covid restrictions,Greater London,bing
+UK spied lockdown,Greater London,bing
+indyref,Greater London,bing_news
+Scottish referendum,Greater London,bing_news
+gender recognition reform bill,Greater London,bing_news
+Northern Ireland Protocol,Greater London,bing_news
+Irish Sea border,Greater London,bing_news
+cost of living,Greater London,bing_news
+inflation,Greater London,bing_news
+anti-strike bill,Greater London,bing_news
+Russian sanctions failure,Greater London,bing_news
+NATO expansion Ukraine,Greater London,bing_news
+recession,Greater London,bing_news
+Hong Kong protests,Greater London,bing_news
+asylum seekers,Greater London,bing_news
+price of petrol,Greater London,bing_news
+NHS strikes,Greater London,bing_news
+Kiev,Greater London,bing_news
+UK military spending cuts,Greater London,bing_news
+lockdown,Greater London,bing_news
+covid restrictions,Greater London,bing_news
+excess deaths 2022,Greater London,bing_news
+covid vaccines,Greater London,bing_news
+Pfizer,Greater London,bing_news
+Moderna,Greater London,bing_news
+Covid-19 origins,Greater London,bing_news
+anti-lockdown protests,Greater London,bing_news
+covid restrictions,Greater London,bing_news
+UK spied lockdown,Greater London,bing_news
+indyref,Greater London,google_news
+Scottish referendum,Greater London,google_news
+gender recognition reform bill,Greater London,google_news
+Northern Ireland Protocol,Greater London,google_news
+Irish Sea border,Greater London,google_news
+cost of living,Greater London,google_news
+inflation,Greater London,google_news
+anti-strike bill,Greater London,google_news
+Russian sanctions failure,Greater London,google_news
+NATO expansion Ukraine,Greater London,google_news
+recession,Greater London,google_news
+Hong Kong protests,Greater London,google_news
+asylum seekers,Greater London,google_news
+price of petrol,Greater London,google_news
+NHS strikes,Greater London,google_news
+Kiev,Greater London,google_news
+UK military spending cuts,Greater London,google_news
+lockdown,Greater London,google_news
+covid restrictions,Greater London,google_news
+excess deaths 2022,Greater London,google_news
+covid vaccines,Greater London,google_news
+Pfizer,Greater London,google_news
+Moderna,Greater London,google_news
+Covid-19 origins,Greater London,google_news
+anti-lockdown protests,Greater London,google_news
+covid restrictions,Greater London,google_news
+UK spied lockdown,Greater London,google_news

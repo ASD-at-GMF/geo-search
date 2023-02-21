@@ -9,3 +9,5 @@ class Search_Query_Results:
         self.twitter_results = []
         self.top_stories = []
         self.visual_stories = []
+        self.news_results = []
+        

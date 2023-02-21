@@ -29,3 +29,5 @@ class Search_Result(Base):
     related_questions = Column(JSON)
     images = Column(JSON)
     rich_snippet_table = Column(JSON)
+    source = Column(String)
+    sitelinks_search_box = Column(JSON)

@@ -20,6 +20,8 @@ from objects.top_story import Top_Story
 from objects.twitter_result import Twitter_Result
 from objects.visual_story import Visual_Story
 from objects.rq import Related_Question
+from objects.news_result import News_Result
+
 
 current_timestamp_str = str(int(time.time()))
 
@@ -40,24 +42,26 @@ def connect_to_db():
     Base.metadata.create_all(engine)
 
         # Table drop/create--leave as is unless change is needed
-    # Search_Result.__table__.drop(engine)
-    # Search_Result.__table__.create(engine)
-    # Related_Search.__table__.drop(engine)
-    # Related_Search.__table__.create(engine)
-    # People_Also_Search_For.__table__.drop(engine)
-    # People_Also_Search_For.__table__.create(engine)
-    # Ad.__table__.drop(engine)
-    # Ad.__table__.create(engine)
-    # Related_Question.__table__.drop(engine)
-    # Related_Question.__table__.create(engine)
-    # Q_and_A.__table__.drop(engine)
-    # Q_and_A.__table__.create(engine)
-    # Top_Story.__table__.drop(engine)
-    # Top_Story.__table__.create(engine)
-    # Twitter_Result.__table__.drop(engine)
-    # Twitter_Result.__table__.create(engine)
-    # Visual_Story.__table__.drop(engine)
-    # Visual_Story.__table__.create(engine)
+    Search_Result.__table__.drop(engine)
+    Search_Result.__table__.create(engine)
+    Related_Search.__table__.drop(engine)
+    Related_Search.__table__.create(engine)
+    People_Also_Search_For.__table__.drop(engine)
+    People_Also_Search_For.__table__.create(engine)
+    Ad.__table__.drop(engine)
+    Ad.__table__.create(engine)
+    Related_Question.__table__.drop(engine)
+    Related_Question.__table__.create(engine)
+    Q_and_A.__table__.drop(engine)
+    Q_and_A.__table__.create(engine)
+    Top_Story.__table__.drop(engine)
+    Top_Story.__table__.create(engine)
+    Twitter_Result.__table__.drop(engine)
+    Twitter_Result.__table__.create(engine)
+    Visual_Story.__table__.drop(engine)
+    Visual_Story.__table__.create(engine)
+    News_Result.__table__.drop(engine)
+    News_Result.__table__.create(engine)
 
 
     Session = sessionmaker(bind=engine)
@@ -71,6 +75,14 @@ def form_parameters(query, location, search_engine):
         params["text"] = query
     elif search_engine == "yahoo":
         params["p"] = query
+    elif search_engine == "bing_news":
+        params["mkt"] = "en-GB"
+        params["cc"] = "gb"
+        params["q"] = query
+    elif search_engine == "google_news":
+        params["engine"] = "google"
+        params["tbm"] = "nws"
+        params["q"] = query
     else:
         params["q"] = query
     return params
@@ -124,7 +136,10 @@ def search_serpapi(query, location, search_engine):
         data['visual_stories'] = list(map(lambda item: {
             **item, 'search_id': query+'||'+location+'||'+search_engine + '||'+current_timestamp_str}, data['visual_stories']))
         query_res.visual_stories += data['visual_stories']
-
+    if 'news_results' in data:
+        data['news_results'] = list(map(lambda item: {
+            **item, 'search_id': query+'||'+location+'||'+search_engine + '||'+current_timestamp_str}, data['news_results']))
+        query_res.news_results += data['news_results']
     return query_res
 
 def save_to_db(query_res):
@@ -163,12 +178,16 @@ def save_to_db(query_res):
     for item in query_res.visual_stories:
         result = Visual_Story(**item)
         session.add(result)
+    
+    for item in query_res.news_results:
+        result = News_Result(**item)
+        session.add(result)
 
     session.commit()
 
 session = connect_to_db()
 
-with open("C:\\Users\\PeterBenzoni\\repo\\geo-search\\searches.csv", "r", encoding='utf-8') as f:
+with open("C:\\Users\\PeterBenzoni\\repo\\geo-search\\searches.csv", "r", encoding='utf-8-sig') as f:
     reader = csv.DictReader(f)
     try:
         for row in reader:
