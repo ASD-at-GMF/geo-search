@@ -1,4 +1,12 @@
 ﻿query,location,engine
+border poll,Greater London,google
+united ireland,Greater London,google
+border poll,Greater London,google_news
+united ireland,Greater London,google_news
+border poll,Greater London,bing
+united ireland,Greater London,bing
+border poll,Greater London,bing_news
+united ireland,Greater London,bing_news
 indyref,Greater London,google
 Scottish referendum,Greater London,google
 gender recognition reform bill,Greater London,google

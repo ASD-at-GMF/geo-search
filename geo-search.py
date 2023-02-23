@@ -2,6 +2,7 @@
 from itertools import product  # importing the product method from itertools library
 import requests
 import json
+import traceback
 import time
 import csv
 from sqlalchemy import create_engine
@@ -63,38 +64,47 @@ def connect_to_db():
     News_Result.__table__.drop(engine)
     News_Result.__table__.create(engine)
 
-
     Session = sessionmaker(bind=engine)
     session = Session()
     return session
 
-def form_parameters(query, location, search_engine):
-    params = {"text": query, "location": location, "api_key": API_KEY,
-              "engine": search_engine, "vc": "uk", "lr": 6708, "num": 40}  # forming the query parameters
-    if search_engine == "yandex":
+def form_parameters(query, location, search_engine, pagination = 0):
+    params = {"api_key": API_KEY, "engine": search_engine}  # forming the query parameters
+    
+    if search_engine == "bing":
+        params["q"] = query
+        params["count"] = 40
+        params["mkt"] = "en-GB"
+    elif search_engine == "google":
+        params["q"] = query
+        params["num"] = 40
+        params["location"] = location
+    elif search_engine == "yandex":
         params["text"] = query
-    elif search_engine == "yahoo":
-        params["p"] = query
+        params["lr"] = 6708
+        params["p"] = pagination
+        params["gl"] = "uk"
+    elif search_engine == "baidu":
+        params["q"] = query
+        params["rn"] = 40
+    elif search_engine == "baidu_news":
+        params["q"] = query
+        params["rn"] = 40
     elif search_engine == "bing_news":
         params["mkt"] = "en-GB"
-        params["cc"] = "gb"
+        params["count"] = 40
         params["q"] = query
     elif search_engine == "google_news":
         params["engine"] = "google"
         params["tbm"] = "nws"
+        params["count"] = 40
         params["q"] = query
     else:
         params["q"] = query
     return params
 
-
-def search_serpapi(query, location, search_engine):
+def format_data( query, location, search_engine, data):
     query_res = Search_Query_Results()
-    base_url = "https://serpapi.com/search"  # base url of the API
-    params = form_parameters(query, location, search_engine)
-    # sending the GET request to the API
-    response = requests.get(base_url, params=params)
-    data = response.json()  # getting the json response
     if 'organic_results' in data:
         data['organic_results'] = list(map(lambda item: {
             **item, 'search_id': query+'||'+location+'||'+search_engine + '||'+current_timestamp_str}, data['organic_results']))
@@ -110,7 +120,7 @@ def search_serpapi(query, location, search_engine):
             query_res.related_searches += data['related_searches']
     if 'people_also_search_for' in data:
         data['people_also_search_for'] = list(map(lambda item: {
-            **item, 'search_id': query+'||'+location+'||'+search_engine + '||'+current_timestamp_str}, data['related_searches']))
+            **item, 'search_id': query+'||'+location+'||'+search_engine + '||'+current_timestamp_str}, data['people_also_search_for']))
         query_res.people_also_search_for += data['people_also_search_for']
     if 'ads' in data:
         data['ads'] = list(map(lambda item: {
@@ -140,6 +150,22 @@ def search_serpapi(query, location, search_engine):
         data['news_results'] = list(map(lambda item: {
             **item, 'search_id': query+'||'+location+'||'+search_engine + '||'+current_timestamp_str}, data['news_results']))
         query_res.news_results += data['news_results']
+    return query_res
+
+def search_serpapi(query, location, search_engine):
+    query_res = Search_Query_Results()
+    base_url = "https://serpapi.com/search"  # base url of the API
+    params = form_parameters(query, location, search_engine)
+    # sending the GET request to the API
+    response = requests.get(base_url, params=params)
+    data = response.json()  # getting the json response
+    #next_link = data['serpapi_pagination']['next_link']
+    query_res = format_data(query, location, search_engine, data)
+    if 'organic_results' in data:
+        print(str(len(data['organic_results'])) + ' Search Results Found')
+    if 'news_results' in data:
+        print(str(len(data['news_results'])) + ' News Results Found')
+
     return query_res
 
 def save_to_db(query_res):
@@ -196,6 +222,7 @@ with open("C:\\Users\\PeterBenzoni\\repo\\geo-search\\searches.csv", "r", encodi
                 query_res = search_serpapi(row['query'], row['location'], row['engine'])
                 save_to_db(query_res)
             except Exception as e:
+                traceback.print_exc()
                 print(e)
                 continue
     finally:
