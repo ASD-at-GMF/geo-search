@@ -31,3 +31,7 @@ class Search_Result(Base):
     rich_snippet_table = Column(JSON)
     source = Column(String)
     sitelinks_search_box = Column(JSON)
+    tracking_link  = Column(String)
+    missing  = Column(String)
+    must_include  = Column(JSON)
+
