@@ -10,7 +10,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 # Internal Imports
-from config import API_KEY, SERVER_URL, DATABASE, DB_USERNAME, DB_PASSWORD
+from config import API_KEY, SERVER_URL, DATABASE, DB_USERNAME, DB_PASSWORD, FILE_NAME
 from objects.search_query_results import Search_Query_Results
 from objects.search_result import Search_Result
 from objects.related_search import Related_Search
@@ -43,26 +43,26 @@ def connect_to_db():
     Base.metadata.create_all(engine)
 
     # Table drop/create--leave as is unless change is needed
-    # Search_Result.__table__.drop(engine)
-    # Search_Result.__table__.create(engine)
-    # Related_Search.__table__.drop(engine)
-    # Related_Search.__table__.create(engine)
-    # People_Also_Search_For.__table__.drop(engine)
-    # People_Also_Search_For.__table__.create(engine)
-    # Ad.__table__.drop(engine) 
-    # Ad.__table__.create(engine)
-    # Related_Question.__table__.drop(engine)
-    # Related_Question.__table__.create(engine)
-    # Q_and_A.__table__.drop(engine)
-    # Q_and_A.__table__.create(engine)
-    # Top_Story.__table__.drop(engine)
-    # Top_Story.__table__.create(engine)
-    # Twitter_Result.__table__.drop(engine)
-    # Twitter_Result.__table__.create(engine)
-    # Visual_Story.__table__.drop(engine)
-    # Visual_Story.__table__.create(engine)
-    # News_Result.__table__.drop(engine)
-    # News_Result.__table__.create(engine)
+    Search_Result.__table__.drop(engine)
+    Search_Result.__table__.create(engine)
+    Related_Search.__table__.drop(engine)
+    Related_Search.__table__.create(engine)
+    People_Also_Search_For.__table__.drop(engine)
+    People_Also_Search_For.__table__.create(engine)
+    Ad.__table__.drop(engine) 
+    Ad.__table__.create(engine)
+    Related_Question.__table__.drop(engine)
+    Related_Question.__table__.create(engine)
+    Q_and_A.__table__.drop(engine)
+    Q_and_A.__table__.create(engine)
+    Top_Story.__table__.drop(engine)
+    Top_Story.__table__.create(engine)
+    Twitter_Result.__table__.drop(engine)
+    Twitter_Result.__table__.create(engine)
+    Visual_Story.__table__.drop(engine)
+    Visual_Story.__table__.create(engine)
+    News_Result.__table__.drop(engine)
+    News_Result.__table__.create(engine)
 
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -172,6 +172,13 @@ def save_to_db(query_res):
     for item in query_res.organic_results:
         result = Search_Result(**item)
         session.add(result)
+    session.commit()
+
+        
+    for item in query_res.news_results:
+        result = News_Result(**item)
+        session.add(result)
+    session.commit()
 
     for item in query_res.related_searches:
         result = Related_Search(**item)
@@ -204,16 +211,12 @@ def save_to_db(query_res):
     for item in query_res.visual_stories:
         result = Visual_Story(**item)
         session.add(result)
-    
-    for item in query_res.news_results:
-        result = News_Result(**item)
-        session.add(result)
 
     session.commit()
 
 session = connect_to_db()
 
-with open("C:\\Users\\PeterBenzoni\\repo\\geo-search\\searches.csv", "r", encoding='utf-8-sig') as f:
+with open(FILE_NAME, "r", encoding='utf-8-sig') as f:
     reader = csv.DictReader(f)
     try:
         for row in reader:
