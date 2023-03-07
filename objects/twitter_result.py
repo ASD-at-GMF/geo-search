@@ -14,3 +14,4 @@ class Twitter_Result(Base):
     published_date = Column(String)
     info = Column(String)
     thumbnail = Column(String)
+    author  = Column(String)
