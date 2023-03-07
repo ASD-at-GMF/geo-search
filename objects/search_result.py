@@ -35,4 +35,4 @@ class Search_Result(Base):
     missing  = Column(String)
     must_include  = Column(JSON)
     video_link = Column(String)
-    key_moments = Column(String)
+    key_moments = Column(JSON)
