@@ -19,3 +19,4 @@ class Ad(Base):
     extensions = Column(String)
     sitelinks = Column(JSON)
     products = Column(JSON)
+    thumbnail = Column(String)

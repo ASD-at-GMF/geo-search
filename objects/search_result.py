@@ -34,4 +34,4 @@ class Search_Result(Base):
     tracking_link  = Column(String)
     missing  = Column(String)
     must_include  = Column(JSON)
-
+    video_link = Column(String)
