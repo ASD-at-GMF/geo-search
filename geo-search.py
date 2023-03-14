@@ -1,9 +1,8 @@
 
 from itertools import product  # importing the product method from itertools library
 import requests
-import json
 import traceback
-import time
+from datetime import datetime
 import csv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -23,8 +22,7 @@ from objects.visual_story import Visual_Story
 from objects.rq import Related_Question
 from objects.news_result import News_Result
 
-
-current_timestamp_str = str(int(time.time()))
+current_timestamp_str = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
 
 # ignored = ['search_information', 'knowledge_graph', ]
 
@@ -42,7 +40,7 @@ def connect_to_db():
     Base = declarative_base()
     Base.metadata.create_all(engine)
 
-    # # Table drop/create--leave as is unless change is needed
+    # Table drop/create--leave as is unless change is needed
     # Search_Result.__table__.drop(engine)
     # Search_Result.__table__.create(engine)
     # Related_Search.__table__.drop(engine)
@@ -68,7 +66,7 @@ def connect_to_db():
     session = Session()
     return session
 
-def form_parameters(query, location, search_engine, pagination = 0):
+def form_parameters(query, location, search_engine, start = 0):
     params = {"api_key": API_KEY, "engine": search_engine}  # forming the query parameters
     
     if search_engine == "bing":
@@ -81,24 +79,23 @@ def form_parameters(query, location, search_engine, pagination = 0):
         params["location"] = location
     elif search_engine == "yandex":
         params["text"] = query
+        params["yandex_domain"] = "yandex.ru"
         params["lr"] = 6708
-        params["p"] = pagination
-        params["gl"] = "uk"
+        params["p"] = start
     elif search_engine == "baidu":
-        params["q"] = query
-        params["rn"] = 40
-    elif search_engine == "baidu_news":
         params["q"] = query
         params["rn"] = 40
     elif search_engine == "bing_news":
         params["mkt"] = "en-GB"
-        params["count"] = 40
+        params["first"] = start + 1
+        params["count"] = 10
         params["q"] = query
     elif search_engine == "google_news":
         params["engine"] = "google"
         params["tbm"] = "nws"
         params["count"] = 40
         params["q"] = query
+        params["start"] = start
     else:
         params["q"] = query
     return params
@@ -152,10 +149,10 @@ def format_data( query, location, search_engine, data):
         query_res.news_results += data['news_results']
     return query_res
 
-def search_serpapi(query, location, search_engine):
+def search_serpapi(query, location, search_engine, start = 0):
     query_res = Search_Query_Results()
     base_url = "https://serpapi.com/search"  # base url of the API
-    params = form_parameters(query, location, search_engine)
+    params = form_parameters(query, location, search_engine, start=start)
     # sending the GET request to the API
     response = requests.get(base_url, params=params)
     data = response.json()  # getting the json response
@@ -173,7 +170,6 @@ def save_to_db(query_res):
         result = Search_Result(**item)
         session.add(result)
     session.commit()
-
         
     for item in query_res.news_results:
         result = News_Result(**item)
@@ -222,8 +218,14 @@ with open(FILE_NAME, "r", encoding='utf-8-sig') as f:
         for row in reader:
             print(row)
             try:
-                query_res = search_serpapi(row['query'], row['location'], row['engine'])
-                save_to_db(query_res)
+                if(row['engine'] == 'google' or row['engine'] == 'bing' or row['engine'] == 'baidu' ):
+                    query_res = search_serpapi(row['query'], row['location'], row['engine'])
+                    save_to_db(query_res)
+                else:
+                    for start in range(0, 30, 10):
+                        query_res = search_serpapi(row['query'], row['location'], row['engine'], start=start)
+                        save_to_db(query_res)
+
             except Exception as e:
                 traceback.print_exc()
                 print(e)
