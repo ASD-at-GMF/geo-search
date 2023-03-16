@@ -41,3 +41,4 @@ class Search_Result(Base):
     related_images = Column(JSON)
     tieba = Column(JSON)
     duration = Column(String)
+    video_quality = Column(String)
