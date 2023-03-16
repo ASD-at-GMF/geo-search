@@ -36,3 +36,6 @@ class Search_Result(Base):
     must_include  = Column(JSON)
     video_link = Column(String)
     key_moments = Column(JSON)
+    related_news = Column(JSON)
+    related_videos = Column(JSON)
+    related_images = Column(JSON)

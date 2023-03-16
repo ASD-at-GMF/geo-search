@@ -222,7 +222,7 @@ with open(FILE_NAME, "r", encoding='utf-8-sig') as f:
                     query_res = search_serpapi(row['query'], row['location'], row['engine'])
                     save_to_db(query_res)
                 else:
-                    for start in range(0, 30, 10):
+                    for start in range(0, 20, 10):
                         query_res = search_serpapi(row['query'], row['location'], row['engine'], start=start)
                         save_to_db(query_res)
 

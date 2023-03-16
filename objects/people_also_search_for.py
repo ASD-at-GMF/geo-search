@@ -12,3 +12,5 @@ class People_Also_Search_For(Base):
     link = Column(String)
     image = Column(String)
     news_results = Column(JSON)
+    text = Column(String)
+    serpapi_link = Column(String)
