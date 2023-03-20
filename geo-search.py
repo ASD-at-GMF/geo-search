@@ -153,6 +153,7 @@ def search_serpapi(query, location, search_engine, start = 0):
     query_res = Search_Query_Results()
     base_url = "https://serpapi.com/search"  # base url of the API
     params = form_parameters(query, location, search_engine, start=start)
+    print(query,location,search_engine)
     # sending the GET request to the API
     response = requests.get(base_url, params=params)
     data = response.json()  # getting the json response
@@ -216,7 +217,6 @@ with open(FILE_NAME, "r", encoding='utf-8-sig') as f:
     reader = csv.DictReader(f)
     try:
         for row in reader:
-            print(row)
             try:
                 if(row['engine'] == 'google' or row['engine'] == 'bing' or row['engine'] == 'baidu' ):
                     query_res = search_serpapi(row['query'], row['location'], row['engine'])
@@ -233,4 +233,6 @@ with open(FILE_NAME, "r", encoding='utf-8-sig') as f:
                 print(e)
                 continue
     finally:
+        print('Search SERP ingestion Complete')
+        requests.get('https://hc-ping.com/17508cb1-2b7d-49e9-b837-b6bede84ce22/')
         session.close()
