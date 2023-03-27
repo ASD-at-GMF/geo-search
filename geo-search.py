@@ -218,7 +218,7 @@ with open(FILE_NAME, "r", encoding='utf-8-sig') as f:
     try:
         for row in reader:
             try:
-                if(row['engine'] == 'google' or row['engine'] == 'bing' or row['engine'] == 'baidu' ):
+                if(row['engine'] == 'google' or row['engine'] == 'bing' or row['engine'] == 'baidu' or row['engine'] == 'yandex'  ):
                     query_res = search_serpapi(row['query'], row['location'], row['engine'])
                     save_to_db(query_res)
                 else:
