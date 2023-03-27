@@ -3,6 +3,7 @@
 Ingests a list of searches (as defined in in searches.csv) and calls the SERP API to grab search or news results, then inserts the results (and related objects) into a PostgresSQL database.  
 
 Requires a file 'config.py' not included in this repo in the root of this directory:
+
     API_KEY = "<SERPAPI API KEY>"
     SERVER_URL = '<URL or IP of Postgres database. May need port number>'
     DATABASE = '<database name>'
@@ -18,6 +19,8 @@ Requires a file 'config.py' not included in this repo in the root of this direct
 | engine   | Search engine to search           | google, google_news, bing, bing_news, baidu, yandex  |
 
 ## Result Objects
+These are the SQL objects created by the code and inserted into the database  
+
 ### Ads
 ad.py is a SQLAlchemy ORM object that represents an advertisement retrieved from the SERP API. It contains information such as the ad's headline, description, and targeting data.
 
