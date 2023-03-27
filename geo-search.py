@@ -80,7 +80,7 @@ def form_parameters(query, location, search_engine, start = 0):
     elif search_engine == "yandex":
         params["text"] = query
         params["yandex_domain"] = "yandex.ru"
-        params["lr"] = 6708
+        params["lr"] = 102
         params["p"] = start
     elif search_engine == "baidu":
         params["q"] = query
