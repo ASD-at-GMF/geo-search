@@ -6,10 +6,9 @@ from datetime import datetime
 import csv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 # Internal Imports
-from config import API_KEY, SERVER_URL, DATABASE, DB_USERNAME, DB_PASSWORD, FILE_NAME
+from config import API_KEY, SERVER_URL, DATABASE, DB_USERNAME, DB_PASSWORD, FILE_NAME, BING_MKT_KEY, YANDEX_DOMAIN, YANDEX_LOCATION_CODE
 from objects.search_query_results import Search_Query_Results
 from objects.search_result import Search_Result
 from objects.related_search import Related_Search
@@ -41,26 +40,26 @@ def connect_to_db():
     Base.metadata.create_all(engine)
 
     # Table drop/create--leave as is unless change is needed
-    # Search_Result.__table__.drop(engine)
-    # Search_Result.__table__.create(engine)
-    # Related_Search.__table__.drop(engine)
-    # Related_Search.__table__.create(engine)
-    # People_Also_Search_For.__table__.drop(engine)
-    # People_Also_Search_For.__table__.create(engine)
-    # Ad.__table__.drop(engine) 
-    # Ad.__table__.create(engine)
-    # Related_Question.__table__.drop(engine)
-    # Related_Question.__table__.create(engine)
-    # Q_and_A.__table__.drop(engine)
-    # Q_and_A.__table__.create(engine)
-    # Top_Story.__table__.drop(engine)
-    # Top_Story.__table__.create(engine)
-    # Twitter_Result.__table__.drop(engine)
-    # Twitter_Result.__table__.create(engine)
-    # Visual_Story.__table__.drop(engine)
-    # Visual_Story.__table__.create(engine)
-    # News_Result.__table__.drop(engine)
-    # News_Result.__table__.create(engine)
+    Search_Result.__table__.drop(engine)
+    Search_Result.__table__.create(engine)
+    Related_Search.__table__.drop(engine)
+    Related_Search.__table__.create(engine)
+    People_Also_Search_For.__table__.drop(engine)
+    People_Also_Search_For.__table__.create(engine)
+    Ad.__table__.drop(engine) 
+    Ad.__table__.create(engine)
+    Related_Question.__table__.drop(engine)
+    Related_Question.__table__.create(engine)
+    Q_and_A.__table__.drop(engine)
+    Q_and_A.__table__.create(engine)
+    Top_Story.__table__.drop(engine)
+    Top_Story.__table__.create(engine)
+    Twitter_Result.__table__.drop(engine)
+    Twitter_Result.__table__.create(engine)
+    Visual_Story.__table__.drop(engine)
+    Visual_Story.__table__.create(engine)
+    News_Result.__table__.drop(engine)
+    News_Result.__table__.create(engine)
 
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -72,26 +71,29 @@ def form_parameters(query, location, search_engine, start = 0):
     if search_engine == "bing":
         params["q"] = query
         params["count"] = 40
-        params["mkt"] = "en-GB"
+        params["mkt"] = BING_MKT_KEY
+        params["location"] = location
     elif search_engine == "google":
         params["q"] = query
         params["num"] = 40
         params["location"] = location
+        params["google_domain"] = "google.pl"
     elif search_engine == "yandex":
         params["text"] = query
-        params["yandex_domain"] = "yandex.ru"
-        params["lr"] = 102
+        params["yandex_domain"] = YANDEX_DOMAIN
+        params["lr"] = YANDEX_LOCATION_CODE
         params["p"] = start
     elif search_engine == "baidu":
         params["q"] = query
         params["rn"] = 40
     elif search_engine == "bing_news":
-        params["mkt"] = "en-GB"
+        params["mkt"] = BING_MKT_KEY
         params["first"] = start + 1
         params["count"] = 10
         params["q"] = query
     elif search_engine == "google_news":
         params["engine"] = "google"
+        params["google_domain"] = "google.pl"
         params["tbm"] = "nws"
         params["count"] = 40
         params["q"] = query
