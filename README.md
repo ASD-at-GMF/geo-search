@@ -8,7 +8,7 @@ Requires a file 'config.py' not included in this repo in the root of this direct
     SERVER_URL = '<URL or IP of Postgres database. May need port number>'
     DATABASE = '<database name>'
     DB_USERNAME = "<username of account used to access the database"
-    DB_PASSWORD = "ASD123!asd123!"
+    DB_PASSWORD = "samplePassword12@!"
     FILE_NAME = "<local path to searches.csv; e.g. /usr/peter/repo/geo-search/searches. "
 
 ## searches.csv definition
