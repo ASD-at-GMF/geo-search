@@ -13,7 +13,7 @@ class Related_Search(Base):
     serpapi_link = Column(String)
     Created = Column(DateTime)
     Updated = Column(DateTime)
-    query = Column(String)
+    query2 = Column(String)
     location = Column(String)
     search_engine = Column(String)
     current_timestamp_str = Column(DateTime)
