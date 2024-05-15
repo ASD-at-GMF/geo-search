@@ -15,6 +15,12 @@ class Twitter_Result(Base):
     info = Column(String)
     thumbnail = Column(String)
     author  = Column(JSON)
+    Created = Column(DateTime)
+    Updated = Column(DateTime)
+    query = Column(String)
+    location = Column(String)
+    search_engine = Column(String)
+    current_timestamp_str = Column(DateTime)
     
     @classmethod
     def get_allowed_keys(cls):

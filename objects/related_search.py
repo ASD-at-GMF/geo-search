@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, JSON
+from sqlalchemy import Column, Integer, String, JSON, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -11,6 +11,12 @@ class Related_Search(Base):
     query = Column(String)
     link = Column(String)
     serpapi_link = Column(String)
+    Created = Column(DateTime)
+    Updated = Column(DateTime)
+    query = Column(String)
+    location = Column(String)
+    search_engine = Column(String)
+    current_timestamp_str = Column(DateTime)
 
     @classmethod
     def get_allowed_keys(cls):

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, JSON, Text
+from sqlalchemy import Column, Integer, String, JSON, Text, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -15,7 +15,13 @@ class News_Result(Base):
     link = Column(String)
     source = Column(String)
     thumbnail = Column(String)
-    
+    Created = Column(DateTime)
+    Updated = Column(DateTime)
+    query = Column(String)
+    location = Column(String)
+    search_engine = Column(String)
+    current_timestamp_str = Column(DateTime)
+
     @classmethod
     def get_allowed_keys(cls):
         # Get the column names from the table metadata

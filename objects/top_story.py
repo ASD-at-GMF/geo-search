@@ -15,6 +15,12 @@ class Top_Story(Base):
     date = Column(String)
     thumbnail = Column(String)
     live = Column(String)
+    Created = Column(DateTime)
+    Updated = Column(DateTime)
+    query = Column(String)
+    location = Column(String)
+    search_engine = Column(String)
+    current_timestamp_str = Column(DateTime)
 
     
     @classmethod
