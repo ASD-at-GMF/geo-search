@@ -6,7 +6,6 @@ from datetime import datetime
 import csv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 import gspread
 # Internal Imports
@@ -116,6 +115,7 @@ def form_parameters(query, search_engine, language, country,  start = 0):
         params["q"] = query
     elif search_engine == "google_news":
         params["engine"] = "google"
+        params["google_domain"] = "google.pl"
         params["tbm"] = "nws"
         params["hl"] = language
         params["gl"] = country
