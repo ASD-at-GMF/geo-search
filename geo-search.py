@@ -259,12 +259,12 @@ while True:
     except gspread.exceptions.WorksheetNotFound:
         break
 
-for table in tables:
-    if table == ['query', 'location', 'engine', 'language']:
+for index, table in enumerate(tables):
+    if index == 0 or 'engine' in table:
         print('Skipping Header')
         continue
     else:
-        row = {'query': table[0], 'location': table[1], 'engine': table[2], 'language': table[3]}
+        row = {'query': table[1], 'location': table[2], 'engine': table[3], 'language': table[4]}
         if(row['engine'] == 'google' or row['engine'] == 'bing'  or row['engine'] == 'yandex'  ):
             query_res = search_serpapi(row['query'], row['location'], row['engine'], row['language'])
             save_to_db(query_res)
